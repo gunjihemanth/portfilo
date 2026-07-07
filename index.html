@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gunji Hemanth — ECE Undergraduate</title>
+<meta name="description" content="Portfolio of Gunji Hemanth — Electronics & Communication Engineering student, MATLAB &amp; signal processing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board:        #0F231B;
+    --board-deep:   #091712;
+    --board-raised: #16302400;
+    --panel:        #142B21;
+    --copper:       #C17A4D;
+    --copper-light: #E7A56C;
+    --silk:         #ECE7D8;
+    --silk-dim:     #97A69C;
+    --solder:       #3C5347;
+    --signal:       #8FE0C4;
+    --danger:       #E0715C;
+
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    --maxw: 980px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--board);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(193,122,77,0.06), transparent 45%),
+      radial-gradient(ellipse at bottom right, rgba(143,224,196,0.05), transparent 40%);
+    color: var(--silk);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a{ color: inherit; }
+
+  ::selection{ background: var(--copper); color: var(--board-deep); }
+
+  /* ---------- Layout scaffolding ---------- */
+  .wrap{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0 28px;
+    position: relative;
+  }
+
+  /* Circuit spine that runs down the page, connecting each section like a net */
+  .spine{
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--solder);
+    display: none;
+  }
+  .spine::before{
+    content:'';
+    position:absolute;
+    left:-2px; top:0;
+    width:5px; height: 120px;
+    background: linear-gradient(var(--signal), transparent);
+    opacity: .55;
+    animation: pulse-down 5.5s linear infinite;
+  }
+  @keyframes pulse-down{
+    0%{ transform: translateY(-140px); }
+    100%{ transform: translateY(110vh); }
+  }
+
+  @media (min-width: 860px){
+    .spine{ display:block; }
+    .wrap{ padding-left: 64px; }
+  }
+
+  section{ position: relative; padding: 96px 0; border-bottom: 1px solid rgba(60,83,71,0.5); }
+  section:last-of-type{ border-bottom: none; }
+
+  .node{
+    position:absolute;
+    left: -64px;
+    top: 96px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--board);
+    border: 2px solid var(--copper);
+    display: none;
+  }
+  .node::after{
+    content:'';
+    position:absolute;
+    left: 50%; top: 50%;
+    width: 4px; height: 4px;
+    background: var(--copper);
+    border-radius: 50%;
+    transform: translate(-50%,-50%);
+  }
+  @media (min-width: 860px){ .node{ display:block; } }
+
+  .eyebrow{
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--copper-light);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin: 0 0 18px 0;
+  }
+  .eyebrow::before{
+    content:'';
+    width: 20px; height: 1px;
+    background: var(--copper);
+    display:inline-block;
+  }
+
+  h1,h2,h3{
+    font-family: var(--mono);
+    font-weight: 700;
+    color: var(--silk);
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  .reveal{
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.in{ opacity:1; transform: translateY(0); }
+
+  /* ---------- Header / nav ---------- */
+  header{
+    position: sticky; top:0; z-index: 50;
+    background: rgba(9,23,18,0.86);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--solder);
+  }
+  .navwrap{
+    max-width: var(--maxw);
+    margin:0 auto;
+    padding: 16px 28px;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+  }
+  @media (min-width:860px){ .navwrap{ padding-left: 64px; } }
+
+  .brand{
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--silk);
+    text-decoration:none;
+    display:flex; align-items:center; gap:8px;
+  }
+  .brand .dot{ width:8px; height:8px; border-radius:50%; background: var(--signal); box-shadow:0 0 8px var(--signal); animation: blink 2.4s ease-in-out infinite; }
+  @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:.25;} }
+
+  nav{ display:none; gap: 28px; font-family: var(--mono); font-size: 13px; }
+  nav a{ text-decoration:none; color: var(--silk-dim); transition: color .2s; }
+  nav a:hover{ color: var(--copper-light); }
+  @media (min-width: 700px){ nav{ display:flex; } }
+
+  /* ---------- Hero ---------- */
+  .hero{ padding: 88px 0 72px; border-bottom: 1px solid var(--solder); }
+  .hero .eyebrow{ margin-bottom: 22px; }
+  .hero h1{
+    font-size: clamp(38px, 6vw, 62px);
+    line-height: 1.05;
+  }
+  .hero h1 .cursor{
+    display:inline-block; width: .5em; height: .85em;
+    background: var(--copper-light);
+    margin-left: 6px; vertical-align: -0.1em;
+    animation: caret 1s steps(1) infinite;
+  }
+  @keyframes caret{ 0%,49%{opacity:1;} 50%,100%{opacity:0;} }
+
+  .hero .role{
+    font-family: var(--mono);
+    color: var(--signal);
+    font-size: 15px;
+    margin-top: 14px;
+  }
+
+  .hero p.lede{
+    max-width: 620px;
+    color: var(--silk-dim);
+    font-size: 17px;
+    margin-top: 22px;
+  }
+
+  .hero-actions{ display:flex; flex-wrap:wrap; gap: 14px; margin-top: 32px; }
+  .btn{
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-decoration:none;
+    padding: 12px 20px;
+    border-radius: 3px;
+    display:inline-flex; align-items:center; gap:8px;
+    transition: transform .18s ease, border-color .18s ease, background .18s ease;
+  }
+  .btn-primary{ background: var(--copper); color: var(--board-deep); border: 1px solid var(--copper); font-weight:700; }
+  .btn-primary:hover{ background: var(--copper-light); transform: translateY(-2px); }
+  .btn-ghost{ border: 1px solid var(--solder); color: var(--silk); }
+  .btn-ghost:hover{ border-color: var(--copper-light); color: var(--copper-light); transform: translateY(-2px); }
+
+  /* oscilloscope waveform */
+  .scope{ margin-top: 56px; border: 1px solid var(--solder); border-radius: 4px; background: var(--board-deep); overflow:hidden; }
+  .scope-bar{ display:flex; align-items:center; gap:8px; padding: 9px 14px; border-bottom: 1px solid var(--solder); font-family: var(--mono); font-size: 11px; color: var(--silk-dim); letter-spacing: .08em;}
+  .scope-bar span.led{ width:7px; height:7px; border-radius:50%; background: var(--danger); }
+  .scope svg{ display:block; width:100%; height: 130px; }
+  .grid-line{ stroke: var(--solder); stroke-width: 1; opacity:.5; }
+  .wave{ fill:none; stroke: var(--signal); stroke-width: 2; filter: drop-shadow(0 0 6px rgba(143,224,196,0.35)); }
+
+  /* ---------- Section titles ---------- */
+  .sec-head{ display:flex; align-items:baseline; justify-content:space-between; gap: 20px; margin-bottom: 40px; flex-wrap:wrap; }
+  .sec-head h2{ font-size: 28px; }
+  .sec-index{ font-family: var(--mono); color: var(--solder); font-size: 13px; }
+
+  /* ---------- About ---------- */
+  .about-grid{ display:grid; grid-template-columns: 1fr; gap: 40px; }
+  @media(min-width:760px){ .about-grid{ grid-template-columns: 1.3fr 1fr; } }
+  .about-grid p{ color: var(--silk-dim); font-size: 16px; }
+  .about-grid strong{ color: var(--silk); font-weight:600; }
+
+  .infocard{ background: var(--panel); border:1px solid var(--solder); border-radius: 6px; padding: 22px 24px; }
+  .infocard dl{ margin:0; display:grid; grid-template-columns: auto 1fr; gap: 10px 16px; font-size: 14px; }
+  .infocard dt{ font-family: var(--mono); color: var(--copper-light); }
+  .infocard dd{ margin:0; color: var(--silk-dim); }
+
+  /* ---------- Skills ---------- */
+  .skill-legend{ display:grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap: 16px; }
+  .skill-card{
+    border:1px solid var(--solder); border-radius: 6px; padding: 18px 20px; background: var(--panel);
+    position:relative; overflow:hidden;
+  }
+  .skill-card::before{
+    content: attr(data-tag);
+    position:absolute; right: 12px; top: 10px;
+    font-family: var(--mono); font-size: 10px; letter-spacing:.08em;
+    color: var(--solder);
+  }
+  .skill-card h3{ font-size: 15px; margin-bottom: 6px; }
+  .skill-card p{ margin:0; font-size: 13px; color: var(--silk-dim); }
+  .skill-bar{ height:4px; background: rgba(255,255,255,0.06); border-radius: 2px; margin-top:14px; overflow:hidden; }
+  .skill-bar i{ display:block; height:100%; background: linear-gradient(90deg,var(--copper),var(--signal)); border-radius:2px; }
+
+  /* ---------- Experience ---------- */
+  .xp-item{ display:grid; grid-template-columns: 1fr; gap:6px; }
+  @media(min-width:760px){ .xp-item{ grid-template-columns: 200px 1fr; gap: 32px; } }
+  .xp-when{ font-family: var(--mono); font-size: 13px; color: var(--copper-light); }
+  .xp-body h3{ font-size: 18px; margin-bottom: 4px; }
+  .xp-body .org{ color: var(--signal); font-family: var(--mono); font-size: 13px; margin-bottom: 12px; display:block;}
+  .xp-body ul{ margin: 0; padding-left: 18px; color: var(--silk-dim); }
+  .xp-body li{ margin-bottom: 8px; }
+
+  /* ---------- Projects ---------- */
+  .proj-list{ display:flex; flex-direction:column; gap: 22px; }
+  .proj-card{
+    border:1px solid var(--solder); border-radius: 8px; background: var(--panel);
+    padding: 28px 30px; transition: border-color .2s ease, transform .2s ease;
+  }
+  .proj-card:hover{ border-color: var(--copper); transform: translateY(-3px); }
+  .proj-top{ display:flex; justify-content:space-between; align-items:flex-start; gap: 16px; flex-wrap:wrap; }
+  .proj-card h3{ font-size: 19px; }
+  .proj-card .stack{ font-family: var(--mono); font-size: 12px; color: var(--silk-dim); margin-top:6px; }
+  .proj-card ul{ margin: 16px 0 0; padding-left: 18px; color: var(--silk-dim); }
+  .proj-card li{ margin-bottom: 6px; }
+  .proj-link{
+    font-family: var(--mono); font-size: 12px; text-decoration:none; color: var(--copper-light);
+    border: 1px solid var(--solder); border-radius: 3px; padding: 7px 12px; white-space:nowrap;
+    display:inline-flex; align-items:center; gap:6px; transition: border-color .2s, color .2s;
+  }
+  .proj-link:hover{ border-color: var(--copper-light); color: var(--signal); }
+
+  /* ---------- Certifications ---------- */
+  .cert-list{ display:grid; grid-template-columns: 1fr; gap: 12px; }
+  @media(min-width:700px){ .cert-list{ grid-template-columns: 1fr 1fr; } }
+  .cert-item{
+    border-left: 2px solid var(--copper);
+    padding: 10px 16px;
+    background: var(--panel);
+    border-radius: 0 6px 6px 0;
+    font-size: 14px;
+    color: var(--silk-dim);
+  }
+  .cert-item b{ color: var(--silk); display:block; font-size:14.5px; margin-bottom:2px; }
+
+  /* ---------- Beyond the bench (extracurricular) ---------- */
+  .beyond{ display:grid; grid-template-columns: 1fr; gap: 16px; }
+  @media(min-width:700px){ .beyond{ grid-template-columns: repeat(3,1fr); } }
+  .beyond-card{ text-align:left; padding: 20px; border:1px solid var(--solder); border-radius:6px; }
+  .beyond-card .glyph{ font-family: var(--mono); color: var(--copper); font-size: 20px; margin-bottom: 10px; display:block;}
+  .beyond-card p{ margin:0; font-size: 13.5px; color: var(--silk-dim); }
+
+  /* ---------- Contact / footer ---------- */
+  footer{ padding: 80px 0 60px; }
+  .contact-box{
+    border: 1px solid var(--solder);
+    border-radius: 10px;
+    padding: 46px 40px;
+    text-align:center;
+    background: radial-gradient(ellipse at center, rgba(193,122,77,0.08), transparent 70%);
+  }
+  .contact-box h2{ font-size: 30px; margin-bottom: 14px; }
+  .contact-box p{ color: var(--silk-dim); max-width: 480px; margin: 0 auto 28px; }
+  .contact-links{ display:flex; justify-content:center; gap: 14px; flex-wrap:wrap; }
+  .foot-note{ text-align:center; margin-top: 48px; font-family: var(--mono); font-size: 12px; color: var(--solder); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="navwrap">
+    <a class="brand" href="#top"><span class="dot"></span>GUNJI HEMANTH</a>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#certifications">Certifications</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<div class="spine"></div>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="node"></div>
+      <p class="eyebrow">// ECE undergraduate · NNRG, 2023&ndash;2027</p>
+      <h1>Building signal paths<br>from circuits to code<span class="cursor"></span></h1>
+      <p class="role">MATLAB &middot; Embedded Systems &middot; Signal &amp; Image Processing</p>
+      <p class="lede">Final-year Electronics &amp; Communication Engineering student who likes taking a problem
+        down to the waveform level &mdash; then writing the algorithm that reads it. Currently researching
+        semi-tensor product operations as a research intern at SRM AP.</p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="mailto:gunjihemanth1010@gmail.com">Email me</a>
+        <a class="btn btn-ghost" href="https://github.com/gunjihemanth" target="_blank" rel="noopener">GitHub &#8599;</a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/gunji-hemanth-446626329" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+      </div>
+
+      <div class="scope reveal">
+        <div class="scope-bar"><span class="led"></span> CH1 &middot; SIGNAL MONITOR &middot; 500mV/div</div>
+        <svg viewBox="0 0 800 130" preserveAspectRatio="none">
+          <line class="grid-line" x1="0" y1="32.5" x2="800" y2="32.5"></line>
+          <line class="grid-line" x1="0" y1="65" x2="800" y2="65"></line>
+          <line class="grid-line" x1="0" y1="97.5" x2="800" y2="97.5"></line>
+          <line class="grid-line" x1="100" y1="0" x2="100" y2="130"></line>
+          <line class="grid-line" x1="200" y1="0" x2="200" y2="130"></line>
+          <line class="grid-line" x1="300" y1="0" x2="300" y2="130"></line>
+          <line class="grid-line" x1="400" y1="0" x2="400" y2="130"></line>
+          <line class="grid-line" x1="500" y1="0" x2="500" y2="130"></line>
+          <line class="grid-line" x1="600" y1="0" x2="600" y2="130"></line>
+          <line class="grid-line" x1="700" y1="0" x2="700" y2="130"></line>
+          <path id="wavepath" class="wave" d="M0,65 Q 25,15 50,65 T 100,65 T 150,65 T 200,65 T 250,65 T 300,65 T 350,65 T 400,65 T 450,65 T 500,65 T 550,65 T 600,65 T 650,65 T 700,65 T 750,65 T 800,65"></path>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="wrap">
+      <div class="node"></div>
+      <div class="sec-head reveal">
+        <h2>Objective</h2>
+        <span class="sec-index">01</span>
+      </div>
+      <div class="about-grid reveal">
+        <p>I'm a final-year ECE student with a strong interest in <strong>electronics, communication systems,
+          and emerging technologies</strong>. I'm looking for a role where I can put technical skills to work,
+          build practical experience, and contribute meaningfully from day one &mdash; whether that's optimizing
+          a routing algorithm in MATLAB or debugging a circuit at 2am before a demo.</p>
+        <div class="infocard">
+          <dl>
+            <dt>Degree</dt><dd>B.Tech, Electronics &amp; Communication Engineering</dd>
+            <dt>Institution</dt><dd>Nalla Narasimha Reddy Group of Institutions (NNRG)</dd>
+            <dt>Duration</dt><dd>2023 &ndash; 2027</dd>
+            <dt>Phone</dt><dd>+91 93989 91984</dd>
+            <dt>Email</dt><dd>gunjihemanth1010@gmail.com</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="wrap">
+      <div class="node"></div>
+      <div class="sec-head reveal">
+        <h2>Skills &amp; Tools</h2>
+        <span class="sec-index">02</span>
+      </div>
+      <div class="skill-legend reveal">
+        <div class="skill-card" data-tag="LANG">
+          <h3>Python</h3>
+          <p>Scripting &amp; basic application logic</p>
+          <div class="skill-bar"><i style="width:55%"></i></div>
+        </div>
+        <div class="skill-card" data-tag="LANG">
+          <h3>MATLAB</h3>
+          <p>Simulation, signal &amp; image processing, optimization</p>
+          <div class="skill-bar"><i style="width:85%"></i></div>
+        </div>
+        <div class="skill-card" data-tag="TOOL">
+          <h3>Keil &micro;Vision</h3>
+          <p>Embedded C &amp; microcontroller firmware</p>
+          <div class="skill-bar"><i style="width:60%"></i></div>
+        </div>
+        <div class="skill-card" data-tag="TOOL">
+          <h3>LTspice</h3>
+          <p>Analog circuit design &amp; simulation</p>
+          <div class="skill-bar"><i style="width:60%"></i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="wrap">
+      <div class="node"></div>
+      <div class="sec-head reveal">
+        <h2>Experience</h2>
+        <span class="sec-index">03</span>
+      </div>
+      <div class="xp-item reveal">
+        <div class="xp-when">Jun 2026 &ndash; Present</div>
+        <div class="xp-body">
+          <h3>Research Intern</h3>
+          <span class="org">SRM University, AP</span>
+          <ul>
+            <li>Conducted research on the semi-tensor product and analyzed matrix operations for
+              producing dimensional results across two matrices.</li>
+            <li>Developed a method to perform matrix operations on n&times;m dimensional matrices,
+              documenting it to be feasible and reliable for industry use.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="wrap">
+      <div class="node"></div>
+      <div class="sec-head reveal">
+        <h2>Projects &amp; Labs</h2>
+        <span class="sec-index">04</span>
+      </div>
+      <div class="proj-list reveal">
+
+        <div class="proj-card">
+          <div class="proj-top">
+            <div>
+              <h3>Hybridization of Clustering in Wireless Sensor Networks</h3>
+              <div class="stack">MATLAB &middot; Particle Swarm Optimization &middot; Grey Wolf Optimization</div>
+            </div>
+            <a class="proj-link" href="https://github.com/gunjihemanth/HYBRIDIZATION-OF-CLUSTERING-IN-WIRELESS-SENSOR-NETWORKS/tree/main" target="_blank" rel="noopener">View repo &#8599;</a>
+          </div>
+          <ul>
+            <li>Implemented PSO and GWO algorithms, hybridized for optimal cluster-head selection.</li>
+            <li>Improved network lifetime and energy efficiency through optimized routing techniques.</li>
+            <li>Simulated wireless sensor node communication and data transmission in MATLAB.</li>
+          </ul>
+        </div>
+
+        <div class="proj-card">
+          <div class="proj-top">
+            <div>
+              <h3>Vehicle Number Plate Detection</h3>
+              <div class="stack">MATLAB &middot; Image Processing &middot; OCR</div>
+            </div>
+            <a class="proj-link" href="https://github.com/gunjihemanth/Vehicle-Number-Plate-Detection-Using-MATLAB" target="_blank" rel="noopener">View repo &#8599;</a>
+          </div>
+          <ul>
+            <li>Built a vehicle number plate detection pipeline using MATLAB image processing techniques.</li>
+            <li>Tested across multiple vehicle images under different lighting conditions.</li>
+            <li>Applied digital image processing and pattern recognition concepts hands-on.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+  <section id="certifications">
+    <div class="wrap">
+      <div class="node"></div>
+      <div class="sec-head reveal">
+        <h2>Training &amp; Certifications</h2>
+        <span class="sec-index">05</span>
+      </div>
+      <div class="cert-list reveal">
+        <div class="cert-item"><b>AI Tools &amp; ChatGPT Expert</b>Be10x workshop</div>
+        <div class="cert-item"><b>Python Full Stack Development (PFSD)</b>Certification course</div>
+        <div class="cert-item"><b>CHARGE 2026</b>24-hour hackathon &mdash; participant</div>
+        <div class="cert-item"><b>Innovation in Internet of Things</b>NPTEL &middot; IIT Kharagpur &middot; Elite certification</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEYOND -->
+  <section id="beyond">
+    <div class="wrap">
+      <div class="node"></div>
+      <div class="sec-head reveal">
+        <h2>Beyond the Bench</h2>
+        <span class="sec-index">06</span>
+      </div>
+      <div class="beyond reveal">
+        <div class="beyond-card">
+          <span class="glyph">&#9673;</span>
+          <p>Boxing &mdash; builds physical fitness, confidence, and sharp decision-making under pressure.</p>
+        </div>
+        <div class="beyond-card">
+          <span class="glyph">&#9673;</span>
+          <p>Inter-college volleyball &mdash; competitive play that sharpened teamwork and coordination.</p>
+        </div>
+        <div class="beyond-card">
+          <span class="glyph">&#9673;</span>
+          <p>Led a project team end-to-end: task distribution, technical integration, testing, and final presentation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <footer id="contact">
+    <div class="wrap">
+      <div class="node"></div>
+      <div class="contact-box reveal">
+        <h2>Let's build something.</h2>
+        <p>Open to internships and collaborations in embedded systems, signal processing, and applied MATLAB work.</p>
+        <div class="contact-links">
+          <a class="btn btn-primary" href="mailto:gunjihemanth1010@gmail.com">gunjihemanth1010@gmail.com</a>
+          <a class="btn btn-ghost" href="tel:+919398991984">+91 93989 91984</a>
+          <a class="btn btn-ghost" href="https://github.com/gunjihemanth" target="_blank" rel="noopener">GitHub</a>
+          <a class="btn btn-ghost" href="https://www.linkedin.com/in/gunji-hemanth-446626329" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+      <p class="foot-note">&copy; 2026 Gunji Hemanth &middot; built with HTML, CSS &amp; a little signal noise</p>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  // Scroll-reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Animated oscilloscope waveform: morph between sine-ish and squarer pulse shapes
+  const wave = document.getElementById('wavepath');
+  if (wave) {
+    const width = 800, mid = 65, amp = 42;
+    let t = 0;
+    function buildPath(phase, sharpness){
+      let d = `M0,${mid}`;
+      const step = 4;
+      for(let x = 0; x <= width; x += step){
+        const raw = Math.sin((x / width) * Math.PI * 6 + phase);
+        const shaped = Math.sign(raw) * Math.pow(Math.abs(raw), sharpness);
+        const y = mid - shaped * amp;
+        d += ` L${x},${y.toFixed(2)}`;
+      }
+      return d;
+    }
+    function animate(){
+      t += 0.02;
+      const sharpness = 0.65 + Math.sin(t * 0.3) * 0.35; // breathes between wavy and squarer
+      wave.setAttribute('d', buildPath(t, Math.max(0.35, sharpness)));
+      requestAnimationFrame(animate);
+    }
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      requestAnimationFrame(animate);
+    }
+  }
+</script>
+
+</body>
+</html>
